@@ -85,7 +85,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside className={cn(
         'fixed top-16 left-0 bottom-0 z-40 w-64 bg-zinc-950 border-r border-zinc-800 flex flex-col transition-transform duration-300',
-        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        isOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
         <nav className="flex-1 p-4 overflow-y-auto">
           <ul className="space-y-1">
