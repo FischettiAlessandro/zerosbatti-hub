@@ -43,13 +43,22 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
 
   async function fetchNotifications() {
     try {
-      const res = await fetch('/api/notifications');
+      const res = await fetch("/api/notifications");
       if (res.ok) {
         const data = await res.json();
         setNotifications(data.notifications || []);
         setUnreadCount(data.unreadCount || 0);
+      } else {
+        // If not authenticated, clear notifications
+        setNotifications([]);
+        setUnreadCount(0);
       }
-    } catch {}
+    } catch (error) {
+      // Handle JSON parse errors or network issues
+      console.warn("Failed to fetch notifications:", error);
+      setNotifications([]);
+      setUnreadCount(0);
+    }
   }
 
   async function markAllRead() {
