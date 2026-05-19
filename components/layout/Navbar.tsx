@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
+  DropdownMenuPortal,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -100,7 +101,7 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button variant="ghost" size="icon" className="relative text-zinc-400 hover:text-white hover:bg-zinc-800" onClick={() => console.log("bell button clicked")}>
+            <Button variant="ghost" size="icon" className="relative text-zinc-400 hover:text-white hover:bg-zinc-800">
               <Bell size={20} />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
@@ -109,32 +110,34 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 bg-zinc-900 border-zinc-800">
-            <DropdownMenuLabel className="flex items-center justify-between text-white">
-              <span>Notifiche</span>
-              {unreadCount > 0 && (
-                <button onClick={markAllRead} className="text-xs text-zinc-400 hover:text-red-400">
-                  Segna tutte come lette
-                </button>
-              )}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-zinc-800" />
-            <div className="max-h-80 overflow-y-auto">
-              {notifications.length === 0 ? (
-                <div className="px-4 py-6 text-center text-zinc-500 text-sm">Nessuna notifica</div>
-              ) : (
-                notifications.slice(0, 8).map(n => (
-                  <DropdownMenuItem key={n.id} className={`flex flex-col items-start p-3 cursor-pointer ${n.is_read ? 'opacity-60' : 'bg-zinc-800/50'}`}>
-                    <div className="flex items-center gap-2 w-full">
-                      {!n.is_read && <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0" />}
-                      <span className="font-medium text-sm text-white truncate">{n.title ?? 'Notifica'}</span>
-                    </div>
-                    <span className="text-xs text-zinc-400 mt-1 leading-relaxed">{n.message ?? ''}</span>
-                  </DropdownMenuItem>
-                ))
-              )}
-            </div>
-          </DropdownMenuContent>
+          <DropdownMenuPortal>
+            <DropdownMenuContent align="end" className="w-80 bg-zinc-900 border-zinc-800">
+              <DropdownMenuLabel className="flex items-center justify-between text-white">
+                <span>Notifiche</span>
+                {unreadCount > 0 && (
+                  <button onClick={markAllRead} className="text-xs text-zinc-400 hover:text-red-400">
+                    Segna tutte come lette
+                  </button>
+                )}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-zinc-800" />
+              <div className="max-h-80 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="px-4 py-6 text-center text-zinc-500 text-sm">Nessuna notifica</div>
+                ) : (
+                  notifications.slice(0, 8).map(n => (
+                    <DropdownMenuItem key={n.id} className={`flex flex-col items-start p-3 cursor-pointer ${n.is_read ? 'opacity-60' : 'bg-zinc-800/50'}`}>
+                      <div className="flex items-center gap-2 w-full">
+                        {!n.is_read && <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0" />}
+                        <span className="font-medium text-sm text-white truncate">{n.title ?? 'Notifica'}</span>
+                      </div>
+                      <span className="text-xs text-zinc-400 mt-1 leading-relaxed">{n.message ?? ''}</span>
+                    </DropdownMenuItem>
+                  ))
+                )}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenuPortal>
         </DropdownMenu>
 
         {/* User menu */}
@@ -150,17 +153,19 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800">
-            <DropdownMenuLabel className="text-zinc-400">
-              <div className="text-white font-medium">{user?.name}</div>
-              <div className="text-xs text-zinc-500">{user?.email}</div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-zinc-800" />
-            <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:text-red-300 cursor-pointer">
-              <LogOut size={16} className="mr-2" />
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
+          <DropdownMenuPortal>
+            <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800">
+              <DropdownMenuLabel className="text-zinc-400">
+                <div className="text-white font-medium">{user?.name}</div>
+                <div className="text-xs text-zinc-500">{user?.email}</div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-zinc-800" />
+              <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:text-red-300 cursor-pointer">
+                <LogOut size={16} className="mr-2" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenuPortal>
         </DropdownMenu>
       </div>
     </nav>
