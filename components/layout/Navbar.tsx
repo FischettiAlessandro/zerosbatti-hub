@@ -133,7 +133,7 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
           <DropdownMenuTrigger>
             <Button variant="ghost" className="flex items-center gap-2 text-zinc-400 hover:text-white hover:bg-zinc-800 px-3">
               <div className={`w-7 h-7 rounded-full ${roleColor} flex items-center justify-center text-white text-xs font-bold`}>
-                {user?.name?.charAt(0).toUpperCase()}
+                {(user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? '')}
               </div>
               <div className="hidden sm:flex flex-col items-start">
                 <span className="text-sm font-medium text-white leading-none">{user?.name}</span>
