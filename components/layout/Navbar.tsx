@@ -127,9 +127,9 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
                   <DropdownMenuItem key={n.id} className={`flex flex-col items-start p-3 cursor-pointer ${n.is_read ? 'opacity-60' : 'bg-zinc-800/50'}`}>
                     <div className="flex items-center gap-2 w-full">
                       {!n.is_read && <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0" />}
-                      <span className="font-medium text-sm text-white truncate">{n.title}</span>
+                      <span className="font-medium text-sm text-white truncate">{n.title ?? 'Notifica'</span>
                     </div>
-                    <span className="text-xs text-zinc-400 mt-1 leading-relaxed">{n.message}</span>
+                    <span className="text-xs text-zinc-400 mt-1 leading-relaxed">{n.message ?? ''}</span>
                   </DropdownMenuItem>
                 ))
               )}
@@ -144,7 +144,7 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
               <div className={`w-7 h-7 rounded-full ${roleColor} flex items-center justify-center text-white text-xs font-bold`}>
                 {(user?.name?.[0]?.toUpperCase() ?? user?.email?.[0]?.toUpperCase() ?? '')}
               </div>
-              <div className="hidden sm:flex flex-col items-start">
+                {(() => { const name = user?.name ?? ''; const email = user?.email ?? ''; const firstChar = (name[0] ?? email[0] ?? '').toUpperCase(); return firstChar; })()}
                 <span className="text-sm font-medium text-white leading-none">{user?.name}</span>
                 <span className="text-xs text-zinc-500 leading-none mt-0.5">{roleLabel}</span>
               </div>

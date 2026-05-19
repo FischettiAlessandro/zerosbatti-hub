@@ -17,7 +17,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
-      <main className="lg:ml-64 pt-16 min-h-screen">
+      <main className={`${sidebarOpen ? "lg:ml-64" : ""} pt-16 min-h-screen`}>
         <div className="p-6">
           {children}
         </div>
