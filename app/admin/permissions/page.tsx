@@ -42,8 +42,9 @@ export default function PermissionsPage() {
     if (res.ok) {
       setUsers(prev => prev.map(u => {
         if (u.id !== userId) return u;
+        const existingPerm = u.permissions.find((p) => p.module_name === module);
         const newPerms = u.permissions.filter((p) => p.module_name !== module);
-        newPerms.push({ module_name: module, is_visible: !currentValue ? 1 : 0 });
+        newPerms.push({ id: existingPerm?.id ?? 0, user_id: userId, module_name: module, is_visible: !currentValue ? 1 : 0 });
         return { ...u, permissions: newPerms };
       }));
       toast.success('Permesso aggiornato');

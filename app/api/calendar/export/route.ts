@@ -15,15 +15,15 @@ export async function GET(request: NextRequest) {
   let events: CalendarEvent[];
   if (user.role === 'admin') {
     events = projectId
-      ? db.prepare('SELECT * FROM calendar_events WHERE project_id = ? ORDER BY start_datetime ASC').all(projectId)
-      : db.prepare('SELECT * FROM calendar_events ORDER BY start_datetime ASC').all();
+      ? db.prepare('SELECT * FROM calendar_events WHERE project_id = ? ORDER BY start_datetime ASC').all(projectId) as CalendarEvent[]
+      : db.prepare('SELECT * FROM calendar_events ORDER BY start_datetime ASC').all() as CalendarEvent[];
   } else if (user.role === 'collaborator') {
     events = db.prepare(`
       SELECT ce.* FROM calendar_events ce
       JOIN collaboration_assignments ca ON ca.project_id = ce.project_id
       WHERE ca.collaborator_id = ? ${projectId ? 'AND ce.project_id = ?' : ''}
       ORDER BY ce.start_datetime ASC
-    `).all(...(projectId ? [user.userId, projectId] : [user.userId]));
+    `).all(...(projectId ? [user.userId, projectId] : [user.userId])) as CalendarEvent[];
   } else {
     events = db.prepare(`
       SELECT ce.* FROM calendar_events ce
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       JOIN clients c ON p.client_id = c.id
       WHERE c.user_id = ? ${projectId ? 'AND ce.project_id = ?' : ''}
       ORDER BY ce.start_datetime ASC
-    `).all(...(projectId ? [user.userId, projectId] : [user.userId]));
+    `).all(...(projectId ? [user.userId, projectId] : [user.userId])) as CalendarEvent[];
   }
 
   const icsEvents = events.map((ev: CalendarEvent) => {

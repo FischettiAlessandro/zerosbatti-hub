@@ -56,10 +56,10 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function markAllRead() {
