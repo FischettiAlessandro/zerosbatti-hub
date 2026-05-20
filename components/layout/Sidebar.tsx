@@ -67,8 +67,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     : clientNav;
 
   const filteredNav = navItems.filter(item => {
-    const module = moduleMap[item.href];
-    if (module) return hasModule(module);
+    const moduleName = moduleMap[item.href];
+    if (moduleName) return hasModule(moduleName);
     return true;
   });
 

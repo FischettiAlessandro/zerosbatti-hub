@@ -1,6 +1,6 @@
 import { getAuthUser } from '@/lib/auth';
-import { getDb } from '@/lib/db';
-import { Link } from 'next/link';
+import getDb from '@/lib/db';
+import Link from 'next/link';
 import { Bell, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 

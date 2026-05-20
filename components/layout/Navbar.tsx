@@ -36,12 +36,6 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
   async function fetchNotifications() {
     try {
       const res = await fetch("/api/notifications");
@@ -61,6 +55,13 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
       setUnreadCount(0);
     }
   }
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function markAllRead() {
     await fetch('/api/notifications/read-all', { method: 'POST' });

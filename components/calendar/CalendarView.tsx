@@ -28,10 +28,6 @@ export function CalendarView({ projectId, canEdit = false, onAddEvent }: Calenda
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
-  useEffect(() => {
-    fetchEvents();
-  }, [currentDate, view]);
-
   async function fetchEvents() {
     const month = format(currentDate, 'yyyy-MM');
     const url = `/api/calendar?${projectId ? `project_id=${projectId}&` : ''}month=${month}`;
@@ -43,6 +39,11 @@ export function CalendarView({ projectId, canEdit = false, onAddEvent }: Calenda
       }
     } catch {}
   }
+
+  useEffect(() => {
+    fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentDate, view]);
 
   function getEventsForDay(day: Date) {
     return events.filter(ev => isSameDay(new Date(ev.start_datetime), day));

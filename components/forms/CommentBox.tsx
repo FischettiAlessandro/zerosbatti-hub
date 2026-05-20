@@ -25,10 +25,6 @@ export function CommentBox({ projectId, contentItemId }: CommentBoxProps) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchComments();
-  }, []);
-
   async function fetchComments() {
     const url = `/api/comments?${projectId ? `project_id=${projectId}` : `content_item_id=${contentItemId}`}`;
     const res = await fetch(url);
@@ -37,6 +33,11 @@ export function CommentBox({ projectId, contentItemId }: CommentBoxProps) {
       setComments(data.comments || []);
     }
   }
+
+  useEffect(() => {
+    fetchComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleSubmit() {
     if (!message.trim()) return;
