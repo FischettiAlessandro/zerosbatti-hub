@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,11 +9,13 @@ import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Quote } from '@/lib/types';
+
+interface QuoteItem { description: string; quantity: number; unit_price: number; total?: number; }
 
 export default function ClientQuoteDetailPage() {
   const { id } = useParams();
-  const router = useRouter();
-  const [quote, setQuote] = useState<any>(null);
+  const [quote, setQuote] = useState<Quote | null>(null);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(false);
 
@@ -87,7 +89,7 @@ export default function ClientQuoteDetailPage() {
               <span className="col-span-2 text-right">Totale</span>
             </div>
             <div className="space-y-1">
-              {items.map((item: any, idx: number) => (
+              {items.map((item: QuoteItem, idx: number) => (
                 <div key={idx} className="grid grid-cols-12 text-sm p-3 rounded-lg bg-zinc-800/50">
                   <span className="col-span-6 text-white">{item.description}</span>
                   <span className="col-span-2 text-center text-zinc-400">{item.quantity}</span>

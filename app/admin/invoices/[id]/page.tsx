@@ -12,18 +12,18 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Invoice, Payment } from '@/lib/types';
 
 export default function InvoiceDetailPage() {
   const { id } = useParams();
-  const [invoice, setInvoice] = useState<any>(null);
-  const [payments, setPayments] = useState<any[]>([]);
-  const [reminders, setReminders] = useState<any[]>([]);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [payDate, setPayDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     fetch(`/api/invoices/${id}`).then(r => r.json()).then(d => {
-      setInvoice(d.invoice); setPayments(d.payments || []); setReminders(d.reminders || []); setLoading(false);
+      setInvoice(d.invoice); setPayments(d.payments || []); setLoading(false);
     });
   }, [id]);
 

@@ -13,12 +13,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Quote, Client } from '@/lib/types';
 
 interface QuoteItem { description: string; quantity: number; unit_price: number; }
 
 export default function QuotesPage() {
-  const [quotes, setQuotes] = useState<any[]>([]);
-  const [clients, setClients] = useState<any[]>([]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ client_id: '', title: '', description: '', status: 'draft', valid_until: '' });
@@ -37,7 +38,7 @@ export default function QuotesPage() {
 
   function addItem() { setItems(i => [...i, { description: '', quantity: 1, unit_price: 0 }]); }
   function removeItem(idx: number) { setItems(i => i.filter((_, j) => j !== idx)); }
-  function updateItem(idx: number, field: keyof QuoteItem, value: any) {
+  function updateItem(idx: number, field: keyof QuoteItem, value: string | number) {
     setItems(prev => prev.map((item, i) => i === idx ? { ...item, [field]: field === 'description' ? value : Number(value) } : item));
   }
   const total = items.reduce((s, i) => s + i.quantity * i.unit_price, 0);

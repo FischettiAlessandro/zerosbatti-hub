@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { ContentItem } from '@/lib/types';
 
 export default function ContentPage() {
-  const [content, setContent] = useState<any[]>([]);
+  const [content, setContent] = useState<ContentItem[]>([]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);

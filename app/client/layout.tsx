@@ -12,7 +12,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (!isLoading && user && user.role !== 'client') router.push(`/${user.role}`);
     if (!isLoading && !user) router.push('/login');
-  }, [user, isLoading]);
+  }, [user, isLoading, router]);
 
   if (isLoading) return <div className="min-h-screen bg-zinc-950 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" /></div>;
 

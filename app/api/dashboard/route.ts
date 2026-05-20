@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
+import { Client, Project } from '@/lib/types';
 
 export async function GET() {
   const user = await getAuthUser();
@@ -13,15 +14,15 @@ export async function GET() {
   db.prepare("UPDATE invoices SET status = 'overdue' WHERE status = 'pending' AND due_date < ?").run(today);
 
   if (user.role === 'admin') {
-    const totalClients = (db.prepare('SELECT COUNT(*) as c FROM clients').get() as any)?.c || 0;
-    const activeProjects = (db.prepare("SELECT COUNT(*) as c FROM projects WHERE status = 'active'").get() as any)?.c || 0;
-    const pendingTasks = (db.prepare("SELECT COUNT(*) as c FROM tasks WHERE status != 'done'").get() as any)?.c || 0;
-    const pendingInvoices = (db.prepare("SELECT COALESCE(SUM(amount), 0) as total FROM invoices WHERE status = 'pending'").get() as any)?.total || 0;
-    const overdueInvoices = (db.prepare("SELECT COUNT(*) as c FROM invoices WHERE status = 'overdue'").get() as any)?.c || 0;
-    const contentReview = (db.prepare("SELECT COUNT(*) as c FROM content_items WHERE status = 'review'").get() as any)?.c || 0;
-    const pendingQuotes = (db.prepare("SELECT COUNT(*) as c FROM quotes WHERE status = 'sent'").get() as any)?.c || 0;
-    const recentClients = db.prepare("SELECT * FROM clients ORDER BY created_at DESC LIMIT 5").all();
-    const recentProjects = db.prepare("SELECT p.*, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id ORDER BY p.created_at DESC LIMIT 5").all();
+    const totalClients = (db.prepare('SELECT COUNT(*) as c FROM clients').get() as { c: number } | undefined)?.c || 0;
+    const activeProjects = (db.prepare("SELECT COUNT(*) as c FROM projects WHERE status = 'active'").get() as { c: number } | undefined)?.c || 0;
+    const pendingTasks = (db.prepare("SELECT COUNT(*) as c FROM tasks WHERE status != 'done'").get() as { c: number } | undefined)?.c || 0;
+    const pendingInvoices = (db.prepare("SELECT COALESCE(SUM(amount), 0) as total FROM invoices WHERE status = 'pending'").get() as { total: number } | undefined)?.total || 0;
+    const overdueInvoices = (db.prepare("SELECT COUNT(*) as c FROM invoices WHERE status = 'overdue'").get() as { c: number } | undefined)?.c || 0;
+    const contentReview = (db.prepare("SELECT COUNT(*) as c FROM content_items WHERE status = 'review'").get() as { c: number } | undefined)?.c || 0;
+    const pendingQuotes = (db.prepare("SELECT COUNT(*) as c FROM quotes WHERE status = 'sent'").get() as { c: number } | undefined)?.c || 0;
+    const recentClients = db.prepare("SELECT * FROM clients ORDER BY created_at DESC LIMIT 5").all() as Client[];
+    const recentProjects = db.prepare("SELECT p.*, c.name as client_name FROM projects p JOIN clients c ON p.client_id = c.id ORDER BY p.created_at DESC LIMIT 5").all() as (Project & { client_name?: string })[];
 
     return NextResponse.json({
       stats: { totalClients, activeProjects, pendingTasks, pendingInvoices, overdueInvoices, contentReview, pendingQuotes },
@@ -29,7 +30,7 @@ export async function GET() {
       recentProjects,
     });
   } else if (user.role === 'collaborator') {
-    const myProjects = (db.prepare("SELECT COUNT(*) as c FROM collaboration_assignments WHERE collaborator_id = ?").get(user.userId) as any)?.c || 0;
+    const myProjects = (db.prepare("SELECT COUNT(*) as c FROM collaboration_assignments WHERE collaborator_id = ?").get(user.userId) as { c: number } | undefined)?.c || 0;
     const myTasks = db.prepare(`
       SELECT t.*, p.name as project_name FROM tasks t
       JOIN collaboration_assignments ca ON ca.project_id = t.project_id
@@ -49,15 +50,15 @@ export async function GET() {
     const myProject = db.prepare(`
       SELECT p.*, c.name as client_name FROM projects p
       JOIN clients c ON p.client_id = c.id WHERE c.user_id = ? ORDER BY p.created_at DESC LIMIT 1
-    `).get(user.userId) as any;
+    `).get(user.userId) as (Project & { client_name?: string }) | undefined;
 
     const pendingQuotes = (db.prepare(`
       SELECT COUNT(*) as c FROM quotes q JOIN clients c ON q.client_id = c.id WHERE c.user_id = ? AND q.status = 'sent'
-    `).get(user.userId) as any)?.c || 0;
+    `).get(user.userId) as { c: number } | undefined)?.c || 0;
 
     const pendingInvoices = (db.prepare(`
       SELECT COUNT(*) as c FROM invoices i JOIN clients c ON i.client_id = c.id WHERE c.user_id = ? AND i.status = 'pending'
-    `).get(user.userId) as any)?.c || 0;
+    `).get(user.userId) as { c: number } | undefined)?.c || 0;
 
     const recentContent = myProject ? db.prepare(`
       SELECT * FROM content_items WHERE project_id = ? ORDER BY created_at DESC LIMIT 5

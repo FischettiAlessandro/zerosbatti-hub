@@ -12,12 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Project, Task, ContentItem } from '@/lib/types';
 
 export default function CollabProjectDetailPage() {
   const { id } = useParams();
-  const [project, setProject] = useState<any>(null);
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [content, setContent] = useState<any[]>([]);
+  const [project, setProject] = useState<Project | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [content, setContent] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Download, Plus, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks } from 'date-fns';
 import { it } from 'date-fns/locale';
@@ -41,7 +41,8 @@ export function CalendarView({ projectId, canEdit = false, onAddEvent }: Calenda
   }
 
   useEffect(() => {
-    fetchEvents();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate, view]);
 

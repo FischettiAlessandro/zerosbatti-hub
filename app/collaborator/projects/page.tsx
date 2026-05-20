@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FolderOpen } from 'lucide-react';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
+import { Project } from '@/lib/types';
 
 export default function CollaboratorProjectsPage() {
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

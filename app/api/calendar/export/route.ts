@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
 import { createEvents } from 'ics';
+import { CalendarEvent } from '@/lib/types';
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser();
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const projectId = searchParams.get('project_id');
 
-  let events: any[];
+  let events: CalendarEvent[];
   if (user.role === 'admin') {
     events = projectId
       ? db.prepare('SELECT * FROM calendar_events WHERE project_id = ? ORDER BY start_datetime ASC').all(projectId)
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
     `).all(...(projectId ? [user.userId, projectId] : [user.userId]));
   }
 
-  const icsEvents = events.map((ev: any) => {
+  const icsEvents = events.map((ev: CalendarEvent) => {
     const start = new Date(ev.start_datetime);
     const end = new Date(ev.end_datetime);
     return {

@@ -12,12 +12,13 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { Client, Project } from '@/lib/types';
 
 export default function ClientDetailPage() {
   const { id } = useParams();
   const router = useRouter();
-  const [client, setClient] = useState<any>(null);
-  const [projects, setProjects] = useState<any[]>([]);
+  const [client, setClient] = useState<Client | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
   const [projectOpen, setProjectOpen] = useState(false);
@@ -114,7 +115,7 @@ export default function ClientDetailPage() {
             {[{ key: 'name', label: 'Nome *' }, { key: 'company', label: 'Azienda' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Telefono' }].map(f => (
               <div key={f.key}>
                 <Label className="text-zinc-300 mb-1.5 block">{f.label}</Label>
-                <Input value={(editForm as any)[f.key]} onChange={e => setEditForm(prev => ({ ...prev, [f.key]: e.target.value }))} className="bg-zinc-800 border-zinc-700 text-white" />
+                <Input value={editForm[f.key as keyof typeof editForm]} onChange={e => setEditForm(prev => ({ ...prev, [f.key]: e.target.value }))} className="bg-zinc-800 border-zinc-700 text-white" />
               </div>
             ))}
             <Button onClick={handleEdit} className="w-full bg-red-600 hover:bg-red-700">Salva modifiche</Button>

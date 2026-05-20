@@ -2,16 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FolderOpen, CheckSquare, Calendar } from 'lucide-react';
+import { FolderOpen, CheckSquare } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { useAuthStore } from '@/store/auth';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Task, CalendarEvent } from '@/lib/types';
+
+interface CollaboratorDashboardData {
+  stats: { myProjects: number; pendingTasks: number };
+  myTasks: Task[];
+  upcomingEvents: CalendarEvent[];
+}
 
 export default function CollaboratorDashboard() {
   const { user } = useAuthStore();
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<CollaboratorDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -42,7 +49,7 @@ export default function CollaboratorDashboard() {
             {(data?.myTasks || []).length === 0 ? (
               <p className="text-sm text-zinc-600 py-4 text-center">Nessun task aperto 🎉</p>
             ) : (
-              (data?.myTasks || []).map((task: any) => (
+              (data?.myTasks || []).map((task) => (
                 <div key={task.id} className="flex items-center gap-3 p-3 rounded-lg bg-zinc-800/50">
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-white truncate">{task.title}</div>
@@ -67,7 +74,7 @@ export default function CollaboratorDashboard() {
             {(data?.upcomingEvents || []).length === 0 ? (
               <p className="text-sm text-zinc-600 py-4 text-center">Nessun evento imminente</p>
             ) : (
-              (data?.upcomingEvents || []).map((ev: any) => (
+              (data?.upcomingEvents || []).map((ev) => (
                 <div key={ev.id} className="flex items-start gap-3 p-3 rounded-lg bg-zinc-800/50">
                   <div className="w-10 h-10 rounded-lg bg-red-600/20 border border-red-600/30 flex flex-col items-center justify-center flex-shrink-0">
                     <span className="text-xs font-bold text-red-400">{format(new Date(ev.start_datetime), 'd', { locale: it })}</span>

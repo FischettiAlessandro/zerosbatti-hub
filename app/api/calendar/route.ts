@@ -14,34 +14,26 @@ export async function GET(request: NextRequest) {
   const base = `SELECT ce.*, p.name as project_name FROM calendar_events ce LEFT JOIN projects p ON ce.project_id = p.id`;
   let events;
 
-  const buildWhere = (extra: string = '') => {
-    const parts = [];
-    if (extra) parts.push(extra);
-    if (projectId) parts.push(`ce.project_id = ${db.prepare('SELECT 1').get() ? `'${projectId}'` : projectId}`);
-    if (month) parts.push(`strftime('%Y-%m', ce.start_datetime) = '${month}'`);
-    return parts.length ? `WHERE ${parts.join(' AND ')}` : '';
-  };
-
   if (user.role === 'admin') {
     let q = base;
     const conditions = [];
     if (projectId) conditions.push(`ce.project_id = ?`);
     if (month) conditions.push(`strftime('%Y-%m', ce.start_datetime) = ?`);
-    const args: any[] = [];
+    const args: (string | number)[] = [];
     if (projectId) args.push(projectId);
     if (month) args.push(month);
     if (conditions.length) q += ` WHERE ${conditions.join(' AND ')}`;
     q += ' ORDER BY ce.start_datetime ASC';
     events = db.prepare(q).all(...args);
   } else if (user.role === 'collaborator') {
-    const args: any[] = [user.userId];
+    const args: (string | number)[] = [user.userId];
     let q = `${base} JOIN collaboration_assignments ca ON ca.project_id = ce.project_id WHERE ca.collaborator_id = ?`;
     if (projectId) { q += ' AND ce.project_id = ?'; args.push(projectId); }
     if (month) { q += ` AND strftime('%Y-%m', ce.start_datetime) = ?`; args.push(month); }
     q += ' ORDER BY ce.start_datetime ASC';
     events = db.prepare(q).all(...args);
   } else {
-    const args: any[] = [user.userId];
+    const args: (string | number)[] = [user.userId];
     let q = `${base} JOIN projects proj ON ce.project_id = proj.id JOIN clients c ON proj.client_id = c.id WHERE c.user_id = ?`;
     if (projectId) { q += ' AND ce.project_id = ?'; args.push(projectId); }
     if (month) { q += ` AND strftime('%Y-%m', ce.start_datetime) = ?`; args.push(month); }

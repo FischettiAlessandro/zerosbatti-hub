@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: 'Non autenticato' }, { status: 401 });
 
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
   // Notify client if status is sent
   if (status === 'sent') {
-    const client = db.prepare('SELECT user_id FROM clients WHERE id = ?').get(client_id) as any;
+    const client = db.prepare('SELECT user_id FROM clients WHERE id = ?').get(client_id) as { user_id?: number } | undefined;
     if (client?.user_id) {
       db.prepare('INSERT INTO notifications (user_id, title, message, type, related_entity_type, related_entity_id) VALUES (?, ?, ?, ?, ?, ?)')
         .run(client.user_id, 'Nuovo preventivo disponibile', `Il preventivo "${title}" è disponibile per la tua approvazione`, 'quote', 'quote', result.lastInsertRowid);

@@ -1,8 +1,8 @@
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
 import Link from 'next/link';
-import { Bell, LogOut } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Bell } from 'lucide-react';
+import { Notification as AppNotification } from '@/lib/types';
 
 export default async function AdminNotificationsPage() {
   const user = await getAuthUser();
@@ -14,7 +14,7 @@ export default async function AdminNotificationsPage() {
   const db = getDb();
   const notifications = db.prepare(
     `SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC`
-  ).all(user.userId);
+  ).all(user.userId) as AppNotification[];
 
   return (
     <div className="min-h-screen bg-zinc-950 p-6">
@@ -32,7 +32,7 @@ export default async function AdminNotificationsPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {notifications.map((n: any) => (
+          {notifications.map((n: AppNotification) => (
             <div key={n.id} className="bg-zinc-900 rounded-lg p-4 border border-zinc-800">
               <div className="flex items-start justify-between">
                 <div className="flex-1">

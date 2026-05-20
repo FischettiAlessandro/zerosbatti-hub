@@ -28,7 +28,7 @@ export function useAuth() {
     }
     if (!user) fetchMe();
     else setLoading(false);
-  }, []);
+  }, [user, setUser, setPermissions, setLoading, router]);
 
   return { user, permissions, isLoading };
 }

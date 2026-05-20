@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { FileText, ExternalLink } from 'lucide-react';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
+import { ContentItem } from '@/lib/types';
 
 export default function CollabContentPage() {
-  const [content, setContent] = useState<any[]>([]);
+  const [content, setContent] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -7,11 +7,12 @@ import { CommentBox } from '@/components/forms/CommentBox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Project, Task, ContentItem } from '@/lib/types';
 
 export default function ClientProjectPage() {
-  const [project, setProject] = useState<any>(null);
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [content, setContent] = useState<any[]>([]);
+  const [project, setProject] = useState<Project | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [content, setContent] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

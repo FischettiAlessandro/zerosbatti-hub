@@ -6,9 +6,10 @@ import { FileCheck } from 'lucide-react';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Quote } from '@/lib/types';
 
 export default function ClientQuotesPage() {
-  const [quotes, setQuotes] = useState<any[]>([]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
+import { Project, CollaborationAssignment, User } from '@/lib/types';
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser();
@@ -40,9 +41,9 @@ export async function POST(request: NextRequest) {
 
   // Notify relevant users about the new comment
   if (project_id) {
-    const project = db.prepare('SELECT p.*, c.user_id as client_user_id FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?').get(project_id) as any;
-    const teamMembers = db.prepare('SELECT collaborator_id FROM collaboration_assignments WHERE project_id = ?').all(project_id) as any[];
-    const admins = db.prepare("SELECT id FROM users WHERE role = 'admin'").all() as any[];
+    const project = db.prepare('SELECT p.*, c.user_id as client_user_id FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?').get(project_id) as (Project & { client_user_id?: number }) | undefined;
+    const teamMembers = db.prepare('SELECT collaborator_id FROM collaboration_assignments WHERE project_id = ?').all(project_id) as CollaborationAssignment[];
+    const admins = db.prepare("SELECT id FROM users WHERE role = 'admin'").all() as Pick<User, 'id'>[];
 
     const notifyIds = new Set<number>();
     if (project?.client_user_id && project.client_user_id !== user.userId) notifyIds.add(project.client_user_id);

@@ -5,9 +5,10 @@ import { FileText, ExternalLink } from 'lucide-react';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { ContentItem } from '@/lib/types';
 
 export default function ClientContentPage() {
-  const [content, setContent] = useState<any[]>([]);
+  const [content, setContent] = useState<ContentItem[]>([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 

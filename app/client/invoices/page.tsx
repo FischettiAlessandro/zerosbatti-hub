@@ -5,9 +5,10 @@ import { Receipt } from 'lucide-react';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Invoice } from '@/lib/types';
 
 export default function ClientInvoicesPage() {
-  const [invoices, setInvoices] = useState<any[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

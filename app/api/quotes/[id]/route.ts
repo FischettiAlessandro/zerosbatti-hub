@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
+import { User, Quote } from '@/lib/types';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await getAuthUser();
@@ -27,8 +28,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
     db.prepare('UPDATE quotes SET status = ? WHERE id = ?').run(status, id);
     // Notify admin
-    const admins = db.prepare("SELECT id FROM users WHERE role = 'admin'").all() as any[];
-    const quote = db.prepare('SELECT title FROM quotes WHERE id = ?').get(id) as any;
+    const admins = db.prepare("SELECT id FROM users WHERE role = 'admin'").all() as Pick<User, 'id'>[];
+    const quote = db.prepare('SELECT title FROM quotes WHERE id = ?').get(id) as Pick<Quote, 'title'> | undefined;
     admins.forEach(admin => {
       db.prepare('INSERT INTO notifications (user_id, title, message, type, related_entity_type, related_entity_id) VALUES (?, ?, ?, ?, ?, ?)')
         .run(admin.id, `Preventivo ${status === 'accepted' ? 'accettato' : 'rifiutato'}`, `Il preventivo "${quote?.title}" è stato ${status === 'accepted' ? 'accettato' : 'rifiutato'} dal cliente`, 'quote', 'quote', id);
@@ -39,7 +40,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       .run(title, description||null, JSON.stringify(items||[]), total_amount||0, status, valid_until||null, client_id, project_id||null, id);
     // Notify client if being sent
     if (status === 'sent') {
-      const quote = db.prepare('SELECT q.*, c.user_id as client_user_id FROM quotes q JOIN clients c ON q.client_id = c.id WHERE q.id = ?').get(id) as any;
+      const quote = db.prepare('SELECT q.*, c.user_id as client_user_id FROM quotes q JOIN clients c ON q.client_id = c.id WHERE q.id = ?').get(id) as (Quote & { client_user_id?: number }) | undefined;
       if (quote?.client_user_id) {
         db.prepare('INSERT INTO notifications (user_id, title, message, type, related_entity_type, related_entity_id) VALUES (?, ?, ?, ?, ?, ?)')
           .run(quote.client_user_id, 'Preventivo aggiornato', `Il preventivo "${title}" è stato aggiornato`, 'quote', 'quote', id);

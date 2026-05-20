@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
+import { User, ModulePermission } from '@/lib/types';
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser();
@@ -15,8 +16,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ permissions });
   }
 
-  const users = db.prepare("SELECT id, name, email, role FROM users WHERE role != 'admin'").all() as any[];
-  const allPermissions = db.prepare('SELECT * FROM module_permissions').all() as any[];
+  const users = db.prepare("SELECT id, name, email, role FROM users WHERE role != 'admin'").all() as User[];
+  const allPermissions = db.prepare('SELECT * FROM module_permissions').all() as ModulePermission[];
 
   const result = users.map(u => ({
     ...u,

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Users, FolderOpen, CheckSquare, FileText,
-  Calendar, Receipt, FileCheck, Bell, Settings, Shield,
+  Calendar, Receipt, FileCheck, Bell, Shield,
   Briefcase, ChevronRight
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';

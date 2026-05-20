@@ -6,11 +6,12 @@ import { Plus, Search, Building2, Mail, Phone, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { Client } from '@/lib/types';
 
 export default function ClientsPage() {
-  const [clients, setClients] = useState<any[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -78,7 +79,7 @@ export default function ClientsPage() {
                   <Label className="text-zinc-300 mb-1.5 block">{field.label}</Label>
                   <Input
                     placeholder={field.placeholder}
-                    value={(form as any)[field.key]}
+                    value={form[field.key as keyof typeof form]}
                     onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
                     className="bg-zinc-800 border-zinc-700 text-white placeholder-zinc-600"
                   />

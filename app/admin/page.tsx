@@ -2,12 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Users, FolderOpen, CheckSquare, Receipt, FileCheck, AlertTriangle, Clock, TrendingUp } from 'lucide-react';
+import { Users, FolderOpen, CheckSquare, Receipt, FileCheck, AlertTriangle, Clock } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
+import { Client, Project } from '@/lib/types';
+
+interface AdminDashboardData {
+  stats: { totalClients: number; activeProjects: number; pendingTasks: number; pendingInvoices: number; overdueInvoices: number; contentReview: number; pendingQuotes: number };
+  recentClients: Client[];
+  recentProjects: (Project & { client_name?: string })[];
+}
 
 export default function AdminDashboard() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<AdminDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,7 +68,7 @@ export default function AdminDashboard() {
             {(data?.recentClients || []).length === 0 ? (
               <p className="text-sm text-zinc-600">Nessun cliente ancora</p>
             ) : (
-              data.recentClients.map((c: any) => (
+              data.recentClients.map((c) => (
                 <Link key={c.id} href={`/admin/clients/${c.id}`} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-zinc-800 transition-colors group">
                   <div className="w-9 h-9 bg-zinc-800 group-hover:bg-zinc-700 rounded-full flex items-center justify-center text-sm font-bold text-zinc-400">
                     {c.name.charAt(0).toUpperCase()}
@@ -86,7 +93,7 @@ export default function AdminDashboard() {
             {(data?.recentProjects || []).length === 0 ? (
               <p className="text-sm text-zinc-600">Nessun progetto ancora</p>
             ) : (
-              data.recentProjects.map((p: any) => (
+              data.recentProjects.map((p) => (
                 <Link key={p.id} href={`/admin/projects/${p.id}`} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-zinc-800 transition-colors">
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-white truncate">{p.name}</div>

@@ -2,16 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileCheck, Receipt, Calendar, FileText, ExternalLink } from 'lucide-react';
+import { FileCheck, Receipt, ExternalLink } from 'lucide-react';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { useAuthStore } from '@/store/auth';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Project, ContentItem, CalendarEvent } from '@/lib/types';
+
+interface ClientDashboardData {
+  myProject: Project | null;
+  stats: { pendingQuotes: number; pendingInvoices: number };
+  recentContent: ContentItem[];
+  upcomingEvents: CalendarEvent[];
+}
 
 export default function ClientDashboard() {
   const { user } = useAuthStore();
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<ClientDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,7 +64,7 @@ export default function ClientDashboard() {
             <Link href="/client/content" className="text-xs text-red-400 hover:text-red-300">Vedi tutti →</Link>
           </div>
           <div className="space-y-2">
-            {(data?.recentContent || []).length === 0 ? <p className="text-sm text-zinc-600 py-4 text-center">Nessun contenuto ancora</p> : (data?.recentContent || []).map((item: any) => (
+            {(data?.recentContent || []).length === 0 ? <p className="text-sm text-zinc-600 py-4 text-center">Nessun contenuto ancora</p> : (data?.recentContent || []).map((item) => (
               <div key={item.id} className="flex items-center gap-3 p-3 rounded-lg bg-zinc-800/50">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-white truncate">{item.title}</div>
@@ -77,7 +85,7 @@ export default function ClientDashboard() {
             <Link href="/client/calendar" className="text-xs text-red-400 hover:text-red-300">Calendario →</Link>
           </div>
           <div className="space-y-2">
-            {(data?.upcomingEvents || []).length === 0 ? <p className="text-sm text-zinc-600 py-4 text-center">Nessun evento imminente</p> : (data?.upcomingEvents || []).map((ev: any) => (
+            {(data?.upcomingEvents || []).length === 0 ? <p className="text-sm text-zinc-600 py-4 text-center">Nessun evento imminente</p> : (data?.upcomingEvents || []).map((ev) => (
               <div key={ev.id} className="flex items-start gap-3 p-3 rounded-lg bg-zinc-800/50">
                 <div className="w-10 h-10 rounded-lg bg-red-600/20 border border-red-600/30 flex flex-col items-center justify-center flex-shrink-0">
                   <span className="text-xs font-bold text-red-400">{format(new Date(ev.start_datetime), 'd')}</span>

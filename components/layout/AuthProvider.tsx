@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [setUser, setPermissions, setLoading, user]);
 
   return <>{children}</>;
 }

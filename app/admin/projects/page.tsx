@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, FolderOpen, Plus } from 'lucide-react';
+import { Search, FolderOpen } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Project } from '@/lib/types';
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);

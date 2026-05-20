@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Plus, CheckSquare, FileText, Users, Trash2, Edit, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Plus, CheckSquare, FileText, Users, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/dashboard/StatusBadge';
 import { CommentBox } from '@/components/forms/CommentBox';
@@ -16,15 +16,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { Project, Task, ContentItem, CollaborationAssignment, User } from '@/lib/types';
+
+type TeamMember = CollaborationAssignment & { name?: string; email?: string; role?: string };
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
-  const router = useRouter();
-  const [project, setProject] = useState<any>(null);
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [content, setContent] = useState<any[]>([]);
-  const [team, setTeam] = useState<any[]>([]);
-  const [collaborators, setCollaborators] = useState<any[]>([]);
+  const [project, setProject] = useState<(Project & { client_email?: string; client_company?: string }) | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [content, setContent] = useState<ContentItem[]>([]);
+  const [team, setTeam] = useState<TeamMember[]>([]);
+  const [collaborators, setCollaborators] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [taskOpen, setTaskOpen] = useState(false);
   const [contentOpen, setContentOpen] = useState(false);

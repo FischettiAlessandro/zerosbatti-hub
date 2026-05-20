@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
+import { Project } from '@/lib/types';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await getAuthUser();
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const project = db.prepare(`
     SELECT p.*, c.name as client_name, c.email as client_email, c.company as client_company
     FROM projects p JOIN clients c ON p.client_id = c.id WHERE p.id = ?
-  `).get(id) as any;
+  `).get(id) as (Project & { client_email?: string; client_company?: string }) | undefined;
   if (!project) return NextResponse.json({ error: 'Progetto non trovato' }, { status: 404 });
 
   const tasks = db.prepare(`

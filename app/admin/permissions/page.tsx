@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Shield, Info } from 'lucide-react';
 import { toast } from 'sonner';
+import { User, ModulePermission } from '@/lib/types';
+
+type UserWithPermissions = User & { permissions: ModulePermission[] };
 
 const MODULES = [
   { key: 'calendar', label: 'Calendario', description: 'Accesso al calendario editoriale' },
@@ -15,7 +18,7 @@ const MODULES = [
 ];
 
 export default function PermissionsPage() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<UserWithPermissions[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
 
@@ -23,8 +26,8 @@ export default function PermissionsPage() {
     fetch('/api/permissions').then(r => r.json()).then(d => { setUsers(d.users || []); setLoading(false); });
   }, []);
 
-  function getPermission(user: any, module: string): boolean {
-    const perm = user.permissions?.find((p: any) => p.module_name === module);
+  function getPermission(user: UserWithPermissions, module: string): boolean {
+    const perm = user.permissions?.find((p) => p.module_name === module);
     return perm ? perm.is_visible === 1 : true; // default visible
   }
 
@@ -39,7 +42,7 @@ export default function PermissionsPage() {
     if (res.ok) {
       setUsers(prev => prev.map(u => {
         if (u.id !== userId) return u;
-        const newPerms = u.permissions.filter((p: any) => p.module_name !== module);
+        const newPerms = u.permissions.filter((p) => p.module_name !== module);
         newPerms.push({ module_name: module, is_visible: !currentValue ? 1 : 0 });
         return { ...u, permissions: newPerms };
       }));

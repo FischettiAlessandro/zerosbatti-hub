@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/auth';
 import getDb from '@/lib/db';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: 'Non autenticato' }, { status: 401 });
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
   ).run(client_id, project_id||null, invoice_number, amount, status||'pending', due_date, issued_date, notes||null);
 
   // Notify client
-  const client = db.prepare('SELECT user_id FROM clients WHERE id = ?').get(client_id) as any;
+  const client = db.prepare('SELECT user_id FROM clients WHERE id = ?').get(client_id) as { user_id?: number } | undefined;
   if (client?.user_id) {
     db.prepare('INSERT INTO notifications (user_id, title, message, type, related_entity_type, related_entity_id) VALUES (?, ?, ?, ?, ?, ?)')
       .run(client.user_id, 'Nuova fattura', `Fattura ${invoice_number} di €${amount} disponibile`, 'invoice', 'invoice', result.lastInsertRowid);

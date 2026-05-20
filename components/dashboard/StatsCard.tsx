@@ -10,7 +10,7 @@ interface StatsCardProps {
   accent?: boolean;
 }
 
-export function StatsCard({ title, value, subtitle, icon: Icon, trend, accent }: StatsCardProps) {
+export function StatsCard({ title, value, subtitle, icon: Icon, accent }: StatsCardProps) {
   return (
     <div className={cn(
       'bg-zinc-900 border rounded-xl p-5 transition-all hover:border-zinc-700',

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import getDb from '@/lib/db';
-import { signToken, COOKIE_NAME } from '@/lib/auth';
+import { signToken, COOKIE_NAME } from '@/lib/jwt';
+import { User } from '@/lib/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const db = getDb();
-    const user = db.prepare('SELECT * FROM users WHERE email = ? AND is_active = 1').get(email) as any;
+    const user = db.prepare('SELECT * FROM users WHERE email = ? AND is_active = 1').get(email) as (User & { password_hash: string }) | undefined;
 
     if (!user) {
       return NextResponse.json({ error: 'Credenziali non valide' }, { status: 401 });
