@@ -3,13 +3,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Bell, Menu, X, LogOut, User } from 'lucide-react';
+import { Bell, Menu, X, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
-  DropdownMenuPortal,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -100,72 +97,64 @@ export function Navbar({ onMenuToggle, sidebarOpen }: NavbarProps) {
       <div className="flex items-center gap-2">
         {/* Notifications */}
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost" size="icon" className="relative text-zinc-400 hover:text-white hover:bg-zinc-800">
-              <Bell size={20} />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </Button>
+          <DropdownMenuTrigger className="relative p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+            <Bell size={20} />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
           </DropdownMenuTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuContent align="end" className="w-80 bg-zinc-900 border-zinc-800">
-              <DropdownMenuLabel className="flex items-center justify-between text-white">
-                <span>Notifiche</span>
-                {unreadCount > 0 && (
-                  <button onClick={markAllRead} className="text-xs text-zinc-400 hover:text-red-400">
-                    Segna tutte come lette
-                  </button>
-                )}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-zinc-800" />
-              <div className="max-h-80 overflow-y-auto">
-                {notifications.length === 0 ? (
-                  <div className="px-4 py-6 text-center text-zinc-500 text-sm">Nessuna notifica</div>
-                ) : (
-                  notifications.slice(0, 8).map(n => (
-                    <DropdownMenuItem key={n.id} className={`flex flex-col items-start p-3 cursor-pointer ${n.is_read ? 'opacity-60' : 'bg-zinc-800/50'}`}>
-                      <div className="flex items-center gap-2 w-full">
-                        {!n.is_read && <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0" />}
-                        <span className="font-medium text-sm text-white truncate">{n.title ?? 'Notifica'}</span>
-                      </div>
-                      <span className="text-xs text-zinc-400 mt-1 leading-relaxed">{n.message ?? ''}</span>
-                    </DropdownMenuItem>
-                  ))
-                )}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenuPortal>
+          <DropdownMenuContent align="end" className="w-80 bg-zinc-900 border-zinc-800">
+            <DropdownMenuLabel className="flex items-center justify-between text-white">
+              <span>Notifiche</span>
+              {unreadCount > 0 && (
+                <button onClick={markAllRead} className="text-xs text-zinc-400 hover:text-red-400">
+                  Segna tutte come lette
+                </button>
+              )}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-zinc-800" />
+            <div className="max-h-80 overflow-y-auto">
+              {notifications.length === 0 ? (
+                <div className="px-4 py-6 text-center text-zinc-500 text-sm">Nessuna notifica</div>
+              ) : (
+                notifications.slice(0, 8).map(n => (
+                  <DropdownMenuItem key={n.id} className={`flex flex-col items-start p-3 cursor-pointer ${n.is_read ? 'opacity-60' : 'bg-zinc-800/50'}`}>
+                    <div className="flex items-center gap-2 w-full">
+                      {!n.is_read && <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0" />}
+                      <span className="font-medium text-sm text-white truncate">{n.title ?? 'Notifica'}</span>
+                    </div>
+                    <span className="text-xs text-zinc-400 mt-1 leading-relaxed">{n.message ?? ''}</span>
+                  </DropdownMenuItem>
+                ))
+              )}
+            </div>
+          </DropdownMenuContent>
         </DropdownMenu>
 
         {/* User menu */}
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost" className="flex items-center gap-2 text-zinc-400 hover:text-white hover:bg-zinc-800 px-3">
-              <div className={`w-7 h-7 rounded-full ${roleColor} flex items-center justify-center text-white text-xs font-bold`}>
-                {(() => { const name = user?.name ?? ''; const email = user?.email ?? ''; const firstChar = (name[0] ?? email[0] ?? '').toUpperCase(); return firstChar; })()}
-              </div>
-              <div className="hidden sm:flex flex-col items-start">
-                <span className="text-sm font-medium text-white leading-none">{user?.name}</span>
-                <span className="text-xs text-zinc-500 leading-none mt-0.5">{roleLabel}</span>
-              </div>
-            </Button>
+          <DropdownMenuTrigger className="flex items-center gap-2 px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+            <div className={`w-7 h-7 rounded-full ${roleColor} flex items-center justify-center text-white text-xs font-bold`}>
+              {(user?.name?.[0] ?? user?.email?.[0] ?? '').toUpperCase()}
+            </div>
+            <div className="hidden sm:flex flex-col items-start">
+              <span className="text-sm font-medium text-white leading-none">{user?.name}</span>
+              <span className="text-xs text-zinc-500 leading-none mt-0.5">{roleLabel}</span>
+            </div>
           </DropdownMenuTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800">
-              <DropdownMenuLabel className="text-zinc-400">
-                <div className="text-white font-medium">{user?.name}</div>
-                <div className="text-xs text-zinc-500">{user?.email}</div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-zinc-800" />
-              <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:text-red-300 cursor-pointer">
-                <LogOut size={16} className="mr-2" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenuPortal>
+          <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800">
+            <DropdownMenuLabel className="text-zinc-400">
+              <div className="text-white font-medium">{user?.name}</div>
+              <div className="text-xs text-zinc-500">{user?.email}</div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-zinc-800" />
+            <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:text-red-300 cursor-pointer">
+              <LogOut size={16} className="mr-2" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </nav>
